@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <contextName>elda</contextName>
+
+  <springProfile name="default,local">
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+      <encoder>
+<!--        <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n</pattern>-->
+        <pattern>%d{HH:mm:ss.SSS} %-5level %msg%n</pattern>
+      </encoder>
+    </appender>
+    <root level="WARN">
+      <appender-ref ref="console"/>
+    </root>
+    <logger name="de.marcelsauer" level="INFO"/>
+    <logger name="io.cloudevents.kafka" level="TRACE"/>
+  </springProfile>
+
+<!--  <springProfile name="dev,stage,live">-->
+<!--    <property name="projectId" value="${projectId:-${GOOGLE_CLOUD_PROJECT}}"/>-->
+<!--    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">-->
+<!--      <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">-->
+<!--        <layout class="com.google.cloud.spring.logging.StackdriverJsonLayout">-->
+<!--          <projectId>${projectId}</projectId>-->
+<!--        </layout>-->
+<!--      </encoder>-->
+<!--    </appender>-->
+<!--    <root level="WARN">-->
+<!--      <appender-ref ref="console"/>-->
+<!--    </root>-->
+<!--    <logger name="de.otto.planetexp" level="DEBUG"/>-->
+<!--  </springProfile>-->
+
+</configuration>

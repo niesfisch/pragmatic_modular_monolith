@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>de.marcelsauer</groupId>
+  <artifactId>pragmatic_modular_monolith_parent</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <url>https://github.com/niesfisch/pragmatic_modular_monolith.git</url>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+      <comments>A business-friendly OSS license</comments>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>msauer</id>
+      <email>niesfisch79@gmail.com</email>
+      <url>https://github.com/niesfisch</url>
+    </developer>
+  </developers>
+
+  <modules>
+    <module>common</module>
+    <module>subdomain</module>
+    <module>app</module>
+  </modules>
+  <scm>
+    <connection>scm:git:ssh://git@github.com/niesfisch/pragmatic_modular_monolith</connection>
+    <developerConnection>scm:git:ssh://git@github.com/niesfisch/pragmatic_modular_monolith</developerConnection>
+    <tag>HEAD</tag>
+    <url>https://github.com/niesfisch/pragmatic_modular_monolith.git</url>
+  </scm>
+  <issueManagement>
+    <system>github</system>
+    <url>https://github.com/niesfisch/pragmatic_modular_monolith/issues</url>
+  </issueManagement>
+  <properties>
+    <assertj-core.version>3.24.2</assertj-core.version>
+    <encoding>UTF-8</encoding>
+    <java.version>17</java.version>
+    <lombok.version>1.18.30</lombok.version>
+    <maven-compiler-plugin.version>3.12.1</maven-compiler-plugin.version>
+    <maven-surefire-plugin.version>3.2.5</maven-surefire-plugin.version>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+    <maven.version>3.8.1</maven.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <spotless-maven-plugin.version>2.43.0</spotless-maven-plugin.version>
+    <spring.version>3.3.0</spring.version>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>${spring.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <!--for submodules using @Slf4j-->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>${lombok.version}</version>
+    </dependency>
+
+    <!-- test deps -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <version>${assertj-core.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.datafaker</groupId>
+      <artifactId>datafaker</artifactId>
+      <version>2.2.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${maven-compiler-plugin.version}</version>
+        <configuration>
+          <annotationProcessorPaths>
+            <path>
+              <groupId>org.projectlombok</groupId>
+              <artifactId>lombok</artifactId>
+              <version>${lombok.version}</version>
+            </path>
+          </annotationProcessorPaths>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>com.diffplug.spotless</groupId>
+        <artifactId>spotless-maven-plugin</artifactId>
+        <version>${spotless-maven-plugin.version}</version>
+        <configuration>
+          <markdown>
+            <includes>
+              <!-- You have to set the target manually -->
+              <include>**/*.md</include>
+            </includes>
+            <flexmark/>
+            <!-- has its own section below -->
+          </markdown>
+          <java>
+            <!-- Cleanthat will refactor your code, but it may break your style: apply it before your formatter -->
+            <cleanthat/>
+
+            <googleJavaFormat>
+              <!-- GOOGLE or AOSP (optional) -->
+              <!-- https://github.com/google/google-java-format -->
+              <style>GOOGLE</style>
+              <!-- optional (requires at least 1.8) -->
+              <reflowLongStrings>true</reflowLongStrings>
+            </googleJavaFormat>
+
+            <!-- standard import order -->
+            <importOrder/>
+
+            <!-- Removing unused imports at the top of each file. -->
+            <removeUnusedImports/>
+
+            <!-- Fixes formatting of type annotations that may have occurred earlier in the formatting process. -->
+            <formatAnnotations/>
+          </java>
+          <pom>
+            <sortPom>
+              <!-- The encoding of the pom files -->
+              <encoding>UTF-8</encoding>
+              <!-- Should empty elements be expanded-->
+              <expandEmptyElements>false</expandEmptyElements>
+              <!-- Should a space be added inside self-closing elements-->
+              <spaceBeforeCloseEmptyElement>false</spaceBeforeCloseEmptyElement>
+              <!-- Keep empty lines -->
+              <keepBlankLines>true</keepBlankLines>
+              <!-- Indentation -->
+              <nrOfIndentSpace>2</nrOfIndentSpace>
+              <!-- Should empty lines be indented -->
+              <indentBlankLines>false</indentBlankLines>
+              <!-- Should schema locations be indented -->
+              <indentSchemaLocation>true</indentSchemaLocation>
+              <!--
+              Sort order of elements: https://github.com/Ekryd/sortpom/wiki/PredefinedSortOrderProfiles
+              recommended_2008_06 - The POM Code Convention that was chosen by Maven developers in 2008 (default for 3.0.0+)
+              -->
+              <predefinedSortOrder>recommended_2008_06</predefinedSortOrder>
+              <!-- Sort dependency exclusions: https://github.com/Ekryd/sortpom/wiki/SortDependencies-->
+              <sortDependencyExclusions/>
+              <!-- Sort properties -->
+              <sortProperties>true</sortProperties>
+              <!-- Sort plugin executions -->
+              <sortExecutions>false</sortExecutions>
+            </sortPom>
+          </pom>
+        </configuration>
+        <executions>
+          <execution>
+            <id>auto-style</id>
+            <goals>
+              <goal>apply</goal>
+            </goals>
+            <phase>validate</phase>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${maven-surefire-plugin.version}</version>
+        <configuration>
+          <includes>
+            <include>**/*IT.java</include>
+          </includes>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

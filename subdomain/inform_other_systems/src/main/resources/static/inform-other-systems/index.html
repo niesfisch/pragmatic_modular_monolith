@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>PMM - Inform Other Systems - Summary</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <script src="/inform-other-systems/js/sockjs-0.3.4.js"></script>
+    <script src="/inform-other-systems/js/stomp.js"></script>
+    <script src="/inform-other-systems/js/app.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<body onload="connect()">
+<noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Websocket relies on Javascript being
+    enabled. Please enable
+    Javascript and reload this page!</h2></noscript>
+<div class="container">
+    <h1>inform-other-systems</h1>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th scope="col">Orders processed so far</th>
+            <th scope="col">Failures so far</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td id="ordersSoFar">0</td>
+            <td id="failuresSoFar">n.a.</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+echo "Running mvn spotless."
+mvn spotless:apply || true

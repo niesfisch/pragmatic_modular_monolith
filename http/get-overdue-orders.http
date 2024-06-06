@@ -1,0 +1,12 @@
+GET http://localhost:8082/order-overdue/api/overdueOrders
+Content-Type: application/json
+
+> {%
+  client.test("Should return 200", function () {
+    client.assert(response.status === 200, `Status was ${response.status}`);
+  });
+%}
+
+
+
+

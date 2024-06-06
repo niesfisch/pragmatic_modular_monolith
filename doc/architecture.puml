@@ -1,0 +1,82 @@
+@startuml
+participant order_intake
+participant order_overdue
+participant order_shipment
+participant inform_other_systems
+
+participant event_store_order_intake #lightblue
+participant failure_order_intake #lightblue
+
+participant event_store_order_overdue #cornflowerblue
+participant failure_order_overdue #cornflowerblue
+
+participant event_store_order_shipment #cornsilk
+participant failure_order_shipment #cornsilk
+
+participant event_store_inform_other_systems #lightgrey
+participant failure_inform_other_systems #lightgrey
+
+participant kafka #99FF99
+participant external_team_A #grey
+participant external_team_B #grey
+
+legend right
+  | DB TX | Database Transaction |
+endlegend
+
+external_team_A -> kafka: publish event //"SomeOrderEventFromOtherTeam"//
+external_team_B -> kafka: publish event //"OrderShippedBySupplier"//
+
+group#lightblue DB TX
+    kafka -> order_intake: consume //"SomeOrderEventFromOtherTeam"//
+    order_intake -> event_store_order_intake: check duplicate
+    order_intake -> order_intake: validate order
+    order_intake -> event_store_order_intake: store incoming event
+    order_intake -> event_store_order_intake: store domain event //"OrderCreatedEventV1"//
+    order_intake -> failure_order_intake: store failure
+end
+
+group#cornflowerblue DB TX
+    kafka -> order_overdue: consume //"OrderCreatedEventV1"//
+    order_overdue -> event_store_order_overdue: check duplicate
+    order_overdue -> order_overdue: validate order
+    order_overdue -> event_store_order_overdue: store incoming event
+    order_overdue -> failure_order_overdue: store failure
+    order_overdue -> event_store_order_overdue: async scheduler: store domain event //"OrderOverdueEventV(1|2)"//
+end
+
+group#cornsilk DB TX
+    kafka -> order_shipment: consume //"OrderCreatedEventV1"//
+    kafka -> order_shipment: consume //"OrderShippedBySupplier"//
+    order_shipment -> event_store_order_shipment: check duplicate
+    order_shipment -> order_shipment: validate order/shipment
+    order_shipment -> event_store_order_shipment: store incoming event
+    order_shipment -> failure_order_shipment: store failure
+    order_shipment -> event_store_order_shipment: async scheduler: store domain event //"OrderShippedV1"//
+end
+
+group#lightgrey DB TX
+    kafka -> inform_other_systems: consume //"OrderCreatedEventV1"//
+    kafka -> inform_other_systems: consume //"OrderOverdueEventV(1|2)"//
+    kafka -> inform_other_systems: consume //"OrderShippedV1(1|2)"//
+    inform_other_systems -> event_store_inform_other_systems: check duplicate
+    inform_other_systems -> inform_other_systems: validate order/shipment/overdue
+    inform_other_systems -> event_store_inform_other_systems: store incoming event
+    inform_other_systems -> failure_inform_other_systems: store failure
+    inform_other_systems -> event_store_inform_other_systems: store domain event //"OrderForOtherTeamInfoEventV1"//
+end
+
+group DB TX
+    event_store_order_shipment -> kafka: publish domain event
+end
+group DB TX
+    event_store_order_overdue -> kafka: publish domain event
+end
+group DB TX
+    event_store_order_intake -> kafka: publish domain event
+end
+group DB TX
+    event_store_inform_other_systems -> kafka: publish domain event
+end
+
+@enduml
